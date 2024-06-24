@@ -1,31 +1,54 @@
 # -*- coding: utf-8 -*-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
-import unittest, time, re
+import unittest
+
+from user import User
 
 
-class FirstDemoAuth(unittest.TestCase):
+def login(wd, user):
+    wd.find_element(By.ID, "username").clear()
+    wd.find_element(By.ID, "username").send_keys(user.username)
+    wd.find_element(By.NAME, "password").clear()
+    wd.find_element(By.NAME, "password").send_keys(user.password)
+    wd.find_element(By.ID, "login-button").click()
+
+
+class test_first_demo_auth(unittest.TestCase):
     def setUp(self):
-        self.wd = webdriver.Chrome()
-        self.wd.implicitly_wait(30)
+        options = webdriver.ChromeOptions()
+        options.page_load_strategy = 'normal'
+
+        options.add_argument("−−incognito")
+        options.accept_insecure_certs = True
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        options.add_argument("−−disable - extensions")#появляются левые вкладки
+        options.add_argument("−−disable-popup-blocking")
+
+
+        self.wd = webdriver.Chrome(options=options)
+        self.wd.set_window_size(1980, 1080)
+        self.wd.implicitly_wait(1)
         self.base_url = "https://www.google.com/"
         self.verificationErrors = []
         self.accept_next_alert = True
 
+
     def test_first_demo_auth(self):
         wd = self.wd
+        self.open_login_page(wd)
+        login(wd, User("demo", "demo"))
+
+    def test_incorrect_demo_auth(self):
+        wd = self.wd
+        self.open_login_page(wd)
+        login(wd, User("1234", "1234"))
+
+    def open_login_page(self, wd):
         wd.get(
             "https://idemo.bspb.ru/auth?response_type=code&client_id=1&redirect_uri=https%3A%2F%2Fidemo.bspb.ru%2Flogin%2Fsuccess&prefetch_uri=https%3A%2F%2Fidemo.bspb.ru%2Flogin%2Fprefetch&force_new_session=true")
-        wd.find_element_by_id("username").click()
-        wd.find_element_by_id("login-form").click()
-        wd.find_element_by_name("password").click()
-        wd.find_element_by_id("login-form").click()
-        wd.find_element_by_id("login-button").click()
-        wd.get("https://idemo.bspb.ru/auth/otp")
 
     def is_element_present(self, how, what):
         try:
@@ -55,7 +78,6 @@ class FirstDemoAuth(unittest.TestCase):
 
     def tearDown(self):
         self.wd.quit()
-        self.assertEqual([], self.verificationErrors)
 
 
 if __name__ == "__main__":
