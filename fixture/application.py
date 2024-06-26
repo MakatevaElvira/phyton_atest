@@ -1,3 +1,4 @@
+import pytest
 from selenium.common import NoSuchElementException, NoAlertPresentException
 from selenium import webdriver
 from selenium.webdriver.chrome import webdriver
@@ -6,17 +7,19 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
 
+
 class Application:
+
     def __init__(self):
         self.wd = WebDriver()
         options = Options()
         options.page_load_strategy = 'normal'
 
-        options.add_argument("−−incognito")
-        options.accept_insecure_certs = True
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        options.add_argument("−−disable - extensions")#появляются левые вкладки
-        options.add_argument("−−disable-popup-blocking")
+        #options.add_argument("−−incognito")
+        #options.accept_insecure_certs = True
+        #options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        #options.add_argument("−−disable - extensions")#появляются левые вкладки
+        #options.add_argument("−−disable-popup-blocking")
 
 
         self.wd = WebDriver(options=options)
@@ -37,6 +40,7 @@ class Application:
         wd.find_element(By.NAME, "password").clear()
         wd.find_element(By.NAME, "password").send_keys(user.password)
         wd.find_element(By.ID, "login-button").click()
+
     def is_element_present(self, how, what):
         try:
             self.wd.find_element(by=how, value=what)
