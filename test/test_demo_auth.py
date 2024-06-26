@@ -11,8 +11,8 @@ def app(request):
 
 #@pytest.mark.parametrize()
 def test_first_demo_auth(app):
-    app.login(User("demo", "demo"))
+    app.session.login(User("demo", "demo"))
 
 
 def test_incorrect_demo_auth(app):
-    app.login(User("1234", "1234"))
+    app.session.login(User("1234", "1234"))
