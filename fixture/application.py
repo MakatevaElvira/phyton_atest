@@ -4,14 +4,16 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
 
 from fixture.session import Session
+from fixture.ibank import Ibank
 
 
 class Application:
 
     def __init__(self):
         self.wd = WebDriver()
-
         self.session = Session(self)
+        self.ibank = Ibank(self)
+
         options = Options()
         options.page_load_strategy = 'normal'
 

@@ -26,5 +26,14 @@ class Session:
         wd = self.app.wd
         wd.get(
             "https://idemo.bspb.ru/auth?response_type=code&client_id=1&redirect_uri=https%3A%2F%2Fidemo.bspb.ru%2Flogin%2Fsuccess&prefetch_uri=https%3A%2F%2Fidemo.bspb.ru%2Flogin%2Fprefetch&force_new_session=true")
-        wd.find_element(By.XPATH, "//div[@id='additional-actions']").click()
-        wd.find_element(By.XPATH, "//div[@class='modal-dialog']")
+        wd.find_element(By.XPATH, "//div[@id='additional-actions']").click() #это кнопка восстановить доступ
+        wd.find_element(By.XPATH, "//div[@class='modal-dialog']")#это модальное информ окно о средствах смены пароля
+
+    def switch_to_ibank_page(self):
+        wd = self.app.wd
+        wd.get(
+            "https://idemo.bspb.ru/auth?response_type=code&client_id=1&redirect_uri=https%3A%2F%2Fidemo.bspb.ru%2Flogin%2Fsuccess&prefetch_uri=https%3A%2F%2Fidemo.bspb.ru%2Flogin%2Fprefetch&force_new_session=true")
+        window_before = wd.window_handles[0]
+        wd.find_element(By.LINK_TEXT, "Об Интернет-банке").click()
+        window_after = wd.window_handles[1]
+        wd.switch_to.window(window_after)
