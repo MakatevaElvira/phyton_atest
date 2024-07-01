@@ -9,6 +9,12 @@ from fixture.ibank import Ibank
 
 class Application:
 
+    def is_valid(self):
+         try:
+             self.wd.current_url
+             return True
+         except:
+             return False
     def __init__(self):
         self.wd = WebDriver()
         self.session = Session(self)
