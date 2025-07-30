@@ -1,10 +1,18 @@
-import pytest
-from selenium.common import NoSuchElementException, NoAlertPresentException
+from asyncio import timeout
+
+from selenium.webdriver.remote.webelement import WebElement
+
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common import NoSuchElementException, NoAlertPresentException, TimeoutException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.wait import WebDriverWait
 
+from pageObjects.locators import Locators
 from fixture.session import Session
 from fixture.ibank import Ibank
+from pageObjects.authPage import AuthPage
+
 
 
 class Application:
@@ -16,23 +24,20 @@ class Application:
          except:
              return False
     def __init__(self):
-        self.wd = WebDriver()
-        self.session = Session(self)
-        self.ibank = Ibank(self)
-
         options = Options()
         options.page_load_strategy = 'normal'
 
-        #options.add_argument("−−incognito")
-        #options.accept_insecure_certs = True
-        #options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        #options.add_argument("−−disable - extensions")#появляются левые вкладки
-        #options.add_argument("−−disable-popup-blocking")
-
-
         self.wd = WebDriver(options=options)
+        self.session = Session(self)
+        self.ibank = Ibank(self)
+        self.authPage = AuthPage(self)
+        self.locators = Locators(self)
+
+
+        self.wd_wait = WebDriverWait
         self.wd.set_window_size(1980, 1080)
-        self.wd.implicitly_wait(1)
+        self.wd.implicitly_wait(0.1)
+        self.timeout = 0.001
 
 
     def is_element_present(self, how, what):
@@ -61,7 +66,14 @@ class Application:
         finally:
             self.accept_next_alert = True
 
-    def desrtoy(self):
+    def is_element_clickable(self, WebElement):
+        try:
+            self.wd_wait(self.wd, self.timeout).until(EC.element_to_be_clickable(WebElement))
+            return True
+        except TimeoutException:
+            return False
+
+    def destroy(self):
         self.wd.quit()
 
 
